@@ -1,0 +1,40 @@
+version: "3.9"
+services:
+  db:
+    image: mysql:latest
+    container_name: db_docker_symfony
+    environment:
+      MYSQL_DATABASE: "dbSymfony"
+      # You can use whatever password you like
+      MYSQL_PASSWORD: "root"
+      # Password for root access
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_TCP_PORT: 3305
+    ports:
+      # <Port exposed> : <MySQL Port running inside container>
+      - "3305:3305"
+    expose:
+      # Opens port 3305 on the container
+      - "3305"
+      # Where our data will be persisted
+    volumes:
+      - my-db:/var/lib/mysql
+    networks:
+      - dev
+
+  www:
+    build: Docker
+    container_name: www_docker_php
+    ports:
+      - "80:80"
+    volumes:
+      - ./Docker/vhosts:/etc/apache2/sites-enabled
+      - ./:/var/www
+    restart: always
+    networks:
+      - dev
+
+networks:
+  dev:
+volumes:
+  my-db:
